@@ -1,5 +1,12 @@
 #!/usr/bin/env sh
 # On Ubuntu 23.04
+## apt ##
+function apt {
+    export DEBIAN_FRONTEND=noninteractive
+    export DEBIAN_PRIORITY=critical
+    export PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    command /usr/bin/apt --yes --quiet --option Dpkg::Options::=--force-confold --option Dpkg::Options::=--force-confdef "$@"
+}
 # Update/Upgrade Essentials
 sudo apt update && sudo apt upgrade -y
 sudo apt install git curl unzip  -y
@@ -49,7 +56,7 @@ sudo systemctl restart apache2
 
 ##### PHP Install/Config
 sudo apt install php8.1 php8.1-cli php8.1-common php8.1-imap php8.1-redis php8.1-snmp php8.1-xml php8.1-zip php8.1-mbstring php8.1-curl libapache2-mod-php php8.1-gd php8.1-bcmath php8.1-mysql php8.1-zip php8.1-memcached php8.1-memcache php8.1-imagick php8.1-libvirt-php  php8.1-fpm php8.1-bz2 php8.1-tidy php8.1-smbclient php8.1-intl php-cli php-mbstring php-curl -y
-CAT <<END > /etc/php/8.1/apache2/php.ini
+cat <<END > /etc/php/8.1/apache2/php.ini
 error_reporting = E_COMPILE_ERROR|E_RECOVERABLE_ERROR|E_ERROR|E_CORE_ERROR
 error_log = /var/log/php/error.log
 max_input_time = 30
@@ -67,8 +74,12 @@ sed -i 's/post_max_size = 8M/post_max_size = 100M/g' /etc/php/8.1/cli/php.ini
 sudo apt install mariadb-server mariadb-client -y
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
-mysql_root_preinstall
-run_mysql_secure_installation
+sudo myql --user=root <<_EOF_
+DELETE FROM mysql.user WHERE User='';
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+FLUSH PRIVILEGES;
+_EOF_
 mysql -uroot -p"$DBROOT_PASSWORD" -e "CREATE DATABASE dbcoup"
 mysql -uroot -p"$DBROOT_PASSWORD" -e "CREATE USER dbcooper"
 mysql -uroot -p"$DBROOT_PASSWORD" -e "GRANT ALL ON dbcoup.* TO 'dbcooper@localhost' IDENTIFIED BY '$DB_PASSWORD'";
@@ -80,6 +91,6 @@ sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 composer install
 ###### Create Drupal Demo Project
 cd /var/www/html
-composer create-project drupalcommerce/demo-project drupal --stability dev --no-interaction
+composer create-project -s dev centarro/commerce-kickstart-project drupal
 cd drupal
-composer require drupal/devel
+composer require drupal/commerce_demo
