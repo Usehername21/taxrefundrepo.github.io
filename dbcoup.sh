@@ -47,7 +47,8 @@ END
 sudo a2enmod rewrite
 sudo a2dissite 000-default.conf
 sudo a2ensite drupal.conf
-sudo systemctl restart apache2
+sudo systemctl reload apache2.service
+sudo systemctl restart apache2.service
 
 ##### PHP Install/Config
 sudo apt install php8.1 php8.1-cli php8.1-common php8.1-imap php8.1-redis php8.1-snmp php8.1-xml php8.1-zip php8.1-mbstring php8.1-curl libapache2-mod-php php8.1-gd php8.1-bcmath php8.1-mysql php8.1-zip php8.1-memcached php8.1-memcache php8.1-imagick php8.1-libvirt-php  php8.1-fpm php8.1-bz2 php8.1-tidy php8.1-smbclient php8.1-intl php-cli php-mbstring php-curl -y
