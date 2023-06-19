@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 # On Ubuntu 23.04
 ## Update/Upgrade Essentials
+sed -i "/#\$nrconf{restart} = 'i';/s/.*/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
 DEBIAN_FRONTEND=noninteractive
 sudo apt update && sudo apt upgrade -y
 sudo apt install git curl unzip  -y
