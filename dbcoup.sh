@@ -1,17 +1,11 @@
 #!/usr/bin/env sh
 # On Ubuntu 23.04
-## apt ##
-function apt {
-    export DEBIAN_FRONTEND=noninteractive
-    export DEBIAN_PRIORITY=critical
-    export PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-    command /usr/bin/apt --yes --quiet --option Dpkg::Options::=--force-confold --option Dpkg::Options::=--force-confdef "$@"
-}
+
 # Update/Upgrade Essentials
-sudo apt update && sudo apt upgrade -y
-sudo apt install git curl unzip  -y
+sudo apt update && sudo apt upgrade --force-yes
+sudo apt install git curl unzip  --force-yes
 # Install/Start Apache2
-    sudo apt install apache2 fail2ban -y
+    sudo apt install apache2 fail2ban --force-yes
     sudo systemctl enable apache2.service
     sudo systemctl start apache2.service
 ## Configure UFW/Fail2ban/Apache2
@@ -55,7 +49,7 @@ sudo a2ensite drupal.conf
 sudo systemctl restart apache2
 
 ##### PHP Install/Config
-sudo apt install php8.1 php8.1-cli php8.1-common php8.1-imap php8.1-redis php8.1-snmp php8.1-xml php8.1-zip php8.1-mbstring php8.1-curl libapache2-mod-php php8.1-gd php8.1-bcmath php8.1-mysql php8.1-zip php8.1-memcached php8.1-memcache php8.1-imagick php8.1-libvirt-php  php8.1-fpm php8.1-bz2 php8.1-tidy php8.1-smbclient php8.1-intl php-cli php-mbstring php-curl -y
+sudo apt install php8.1 php8.1-cli 1.php8-common php8.1-imap php8.1-redis php8.1-snmp php8.1-xml php8.1-zip php8.1-mbstring php8.1-curl libapache2-mod-php php8.1-gd php8.1-bcmath php8.1-mysql php8.1-zip php8.1-memcached php8.1-memcache php8.1-imagick php8.1-libvirt-php  php8.1-fpm php8.1-bz2 php8.1-tidy php8.1-smbclient php8.1-intl php-cli php-mbstring php-curl --force-yes
 cat <<END > /etc/php/8.1/apache2/php.ini
 error_reporting = E_COMPILE_ERROR|E_RECOVERABLE_ERROR|E_ERROR|E_CORE_ERROR
 error_log = /var/log/php/error.log
@@ -71,7 +65,7 @@ sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 100M/g' /etc/php/8.1/cl
 sed -i 's/post_max_size = 8M/post_max_size = 100M/g' /etc/php/8.1/cli/php.ini
 
 ##### Mysql Install/Start
-sudo apt install mariadb-server mariadb-client -y
+sudo apt install mariadb-server mariadb-client --force-yes
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
 sudo myql --user=root <<_EOF_
@@ -94,3 +88,4 @@ cd /var/www/html
 composer create-project -s dev centarro/commerce-kickstart-project drupal
 cd drupal
 composer require drupal/commerce_demo
+
